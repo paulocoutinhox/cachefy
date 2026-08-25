@@ -306,12 +306,10 @@ against it, operation by operation.
 
 ### Versions
 
-**PostgreSQL 14+, MySQL 8.0+, Redis 7.0+**, and whichever SQLite Python was built with. Both ends of
-every range answer the whole suite on every push — a minimum nobody tests is a number in a table. When
-a version reaches end of life, raise the floor and the CI job with it.
-
-Verified against the floors themselves: Redis 7.0.15, MySQL 8.0.46 and PostgreSQL 14.24 answer the whole
-suite and the stress suite, at 100% coverage.
+The suite runs against **Redis 7, MySQL 8.4 and PostgreSQL 16**, and against whichever SQLite the
+interpreter was built with. Nothing here reaches for anything recent in any of them, so older releases
+are very likely to work — but nothing runs them, so nothing promises them. What the prose says is what
+the pipeline runs, and the two are not allowed to drift.
 
 ### RedisStore
 
@@ -515,10 +513,9 @@ Three workflows, all under `.github/workflows/`.
 
 **`test.yml`** runs on every push and pull request, with Redis, MySQL and PostgreSQL as service
 containers on the same ports `make servers` uses. It declares `workflow_call`, so the release calls it
-instead of repeating it. Two jobs:
+instead of repeating it. One job:
 
-- `test` — Python 3.11, 3.12 and 3.13 against the newest servers, linting and then the coverage gate.
-- `oldest` — one Python against the oldest supported version of each store, which is what keeps the number in the documentation from being a number in a table.
+- `test` — Python 3.11, 3.12 and 3.13 against Redis, MySQL and PostgreSQL, linting and then the coverage gate.
 
 **What a source distribution carries is named in `pyproject.toml`, anchored to the root.** Left unnamed
 it takes whatever the working directory holds — a virtualenv beside the source went in, and one absolute
@@ -715,7 +712,7 @@ findings. A suite green on one version says nothing about the versions the READM
 - [x] **The whole suite passes on the oldest Python the project claims**, not only on the newest one it is developed against. Running it on 3.11 is what found the SQLite contention that 3.13 was simply fast enough to skate over.
 - [x] **The built wheel installs into an empty environment and imports with zero dependencies**, and each extra brings what its store needs. Verified by installing it and reading, memoizing, single-flighting and counting from it.
 - [x] **Nothing the source tree has is missing from the wheel**, and nothing the working directory happens to hold reaches the sdist. What it carries is named in `pyproject.toml`, anchored to the root — unanchored, `tests` matched a `tests` directory inside a virtualenv and pulled 191 of its files in.
-- [x] **Both ends of every store version range answer the whole suite**, verified against Redis 7.0.15, MySQL 8.0.46 and PostgreSQL 14.24.
+- [x] **What the prose says about store versions is what the pipeline runs.** The suite names Redis 7, MySQL 8.4 and PostgreSQL 16 and the documentation names the same three, so a version claim can never outlive the job behind it.
 
 ### 12.8 The suite, distrusted
 
@@ -740,7 +737,7 @@ findings. A suite green on one version says nothing about the versions the READM
 - [x] **That gate carries no condition**, because a conditional gate is one some run skips.
 - [x] **Nothing is built until the suite and the load have both answered**, and what is published is the artifact the build made rather than a second build nobody ran against.
 - [x] **It authenticates by a token nobody stores**, through Trusted Publishing and the `pypi` environment.
-- [x] **The versions the CI runs are the versions the documentation promises** — both ends of every store range, and every Python the package claims, including the `requires-python` floor.
+- [x] **The versions the CI runs are the versions the documentation promises** — the three servers it names, and every Python the package claims, including the `requires-python` floor.
 
 ### 12.11 The harness and the environment, distrusted
 

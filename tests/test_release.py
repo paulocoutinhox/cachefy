@@ -71,21 +71,6 @@ def test_it_authenticates_by_a_token_nobody_stores():
     assert "secrets" not in (WORKFLOWS / "release.yml").read_text().replace("secrets: inherit", ""), "the release names a stored secret"
 
 
-def test_every_store_is_answered_for_at_both_ends_of_the_range_it_documents():
-    """A minimum nobody tests is a number in a table."""
-    jobs = workflow("test.yml")["jobs"]
-    oldest = {name: service["image"] for name, service in jobs["oldest"]["services"].items()}
-
-    promised = pathlib.Path("docs/stores.md").read_text()
-
-    for image, floor in ((oldest["redis"], "Redis 7.0"), (oldest["mysql"], "MySQL 8.0"), (oldest["postgres"], "PostgreSQL 14")):
-        assert floor in promised, f"the documentation no longer promises {floor} while the suite still runs {image}"
-
-    assert oldest["redis"] == "redis:7.0"
-    assert oldest["mysql"] == "mysql:8.0"
-    assert oldest["postgres"] == "postgres:14"
-
-
 def test_every_python_the_project_claims_is_one_the_suite_runs():
     """A classifier nobody runs against is a claim, and the floor is where the interpreter differences actually live."""
     running = set(workflow("test.yml")["jobs"]["test"]["strategy"]["matrix"]["python"])

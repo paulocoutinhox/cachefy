@@ -11,12 +11,11 @@ them to keep that true.
 
 ## 🧾 Versions
 
-**PostgreSQL 14+, MySQL 8.0+, Redis 7.0+**, and whichever SQLite Python was built with. Both ends of
-every range answer the whole suite on every push, because a minimum nobody tests is a number in a
-table.
+The suite runs against **Redis 7, MySQL 8.4 and PostgreSQL 16** on every push, and against whichever
+SQLite the interpreter was built with.
 
-The floor is where a version is still maintained and not the oldest the code could sit on. When a
-version reaches end of life, raise the floor and the pipeline job with it.
+Older releases of each are very likely to work, because nothing here reaches for anything recent — but
+they are not run, so they are not promised. If you need one of them, run the suite against it.
 
 ## 🟥 RedisStore
 

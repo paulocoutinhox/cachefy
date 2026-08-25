@@ -41,7 +41,7 @@ Two promises run through the whole of it:
 - [x] Atomic counters for rate limits and quotas
 - [x] Named spaces, cleared whole in one step
 - [x] Hooks for hits, misses and every call a store could not answer
-- [x] Pluggable stores: PostgreSQL 14+, MySQL 8.0+, Redis 7+, SQLite and memory
+- [x] Pluggable stores: PostgreSQL, MySQL, Redis, SQLite and memory
 - [x] A value of `None` is a value, told apart from a name holding nothing
 - [x] No dependencies in the core
 - [x] 100% branch coverage: one contract against every store, plus differential, concurrency, interrupted-call, contention, resilience and multi-process suites
@@ -139,8 +139,8 @@ git tag v1.0.1
 git push origin v1.0.1
 ```
 
-That tag is the only trigger. The workflow then runs the suite on every supported Python and against
-the oldest supported version of each store, runs the stress suite against real servers, checks that
+That tag is the only trigger. The workflow then runs the suite on every supported Python against real
+Redis, MySQL and PostgreSQL, runs the stress suite against them, checks that
 the tag agrees with `pyproject.toml`, builds the wheel and the sdist, publishes them to PyPI through
 Trusted Publishing, and creates the GitHub release with its notes and the built files attached.
 
