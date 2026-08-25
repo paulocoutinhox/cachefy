@@ -1039,14 +1039,7 @@ class Standing(str):
         return True
 
 
-@pytest.mark.parametrize(
-    "name, refused",
-    [
-        (Shrinking("k" * (KEY_LIMIT + 45)), "characters and a store keeps"),
-        (Spotless("a\x00b"), "nul byte"),
-        (Standing(""), "is empty"),
-    ],
-)
+@pytest.mark.parametrize("name, refused", [(Shrinking("k" * (KEY_LIMIT + 45)), "characters and a store keeps"), (Spotless("a\x00b"), "nul byte"), (Standing(""), "is empty")])
 @pytest.mark.parametrize("judge", [named, spaced])
 def test_a_name_is_judged_by_the_text_a_store_will_hold_and_never_by_the_object(judge, name, refused):
     """Every guard measured the object a caller passed, so a subclass answering its own length handed the store three hundred characters through a limit of 255."""

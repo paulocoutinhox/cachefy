@@ -40,6 +40,30 @@ users = app.space("users", ttl=timedelta(minutes=5))
 Declaring it is what refuses a lifetime that could never work, so a policy nobody could honour fails
 where you wrote it and not on the night nothing is ever cached.
 
+## ✂️ One space and nothing else
+
+There is no entry without a space: what tells one from another is the space and the key together. When
+you only want a cache, declare one and keep that.
+
+```python
+from datetime import timedelta
+
+from redis.asyncio import Redis
+
+from cachefy.app import Cachefy
+from cachefy.store.redis import RedisStore
+
+cache = Cachefy(RedisStore(Redis.from_url("redis://127.0.0.1:6379/0"))).space("cache", ttl=timedelta(minutes=5))
+```
+
+From there it is `set` and `get` and nothing else to think about, and every call below reads the same
+whichever way you declared it.
+
+**A space still knows the cache it belongs to**, as `cache.app`, which is where `setup` and the hooks
+live. On a database that matters: without `await cache.app.setup()` there is no table, so every write
+is dropped and every read is a miss — told to the hooks and never raised, which is a cache that looks
+alive and holds nothing. Memory and Redis need nothing built.
+
 ## 📨 Read and write
 
 ```python
