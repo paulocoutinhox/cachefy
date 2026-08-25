@@ -20,7 +20,7 @@ install:
 	$(PYTHON) -m venv $(VENV)
 	$(VENV)/bin/python -m pip install --upgrade pip
 	# the mysql and postgres drivers belong here and not in the extras: the suite reaches a store whenever its port answers, so with `make servers` up and a driver missing every test of that store errors on the engine instead of being left out
-	$(VENV)/bin/python -m pip install -e ".[sqlalchemy,redis]" pytest pytest-asyncio pytest-cov pytest-timeout ruff black aiosqlite aiomysql asyncpg cryptography pyyaml build
+	$(VENV)/bin/python -m pip install -e ".[sqlalchemy,redis]" pytest pytest-asyncio pytest-cov pytest-timeout "ruff==0.16.4" "black==26.5.1" aiosqlite aiomysql asyncpg cryptography pyyaml build
 
 servers:
 	docker run -d --name cachefy-redis -p 6398:6379 redis:7-alpine
