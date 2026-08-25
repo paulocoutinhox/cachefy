@@ -180,8 +180,14 @@ async def test_a_fetch_a_deadline_gave_up_on_leaves_no_name_held(app):
         async with asyncio.timeout(0.05):
             await users.fetch("42", never_answers)
 
-    async with asyncio.timeout(5):
-        assert await users.fetch("42", lambda: "after") == "after"
+    # The release is shielded, so a caller a deadline gave up on leaves it finishing behind them rather than never.
+    # What this asks is that the name is let go, and never how many seconds the slowest store takes to let go of it.
+    async def let_go() -> bool:
+        return await app.store.read(LOCKS, digested(joined("users", "42")), now()) is None
+
+    await wait_until(let_go, patience=30.0)
+
+    assert await users.fetch("42", lambda: "after") == "after"
 
 
 def test_the_cache_answers_a_synchronous_caller_through_one_loop_of_its_own():
