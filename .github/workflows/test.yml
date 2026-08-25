@@ -57,9 +57,9 @@ jobs:
           --health-retries 20
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v7
         with:
           python-version: ${{ matrix.python }}
 
@@ -79,7 +79,7 @@ jobs:
       # One upload, because every version of the matrix answers the same gate and produces the same report.
       - name: coverage
         if: matrix.python == '3.13'
-        uses: codecov/codecov-action@v5
+        uses: codecov/codecov-action@v7
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           slug: paulocoutinhox/cachefy
