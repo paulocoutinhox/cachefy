@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "cachefy"
-version = "1.0.0"
+version = "0.0.3"
 description = "Cachefy — asynchronous cache for Python, where a name holds a value until an instant and a store that blinked is never a failure the caller sees."
 readme = "README.md"
 requires-python = ">=3.11"
