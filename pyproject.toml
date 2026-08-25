@@ -1,0 +1,79 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "cachefy"
+version = "1.0.0"
+description = "Cachefy — asynchronous cache for Python, where a name holds a value until an instant and a store that blinked is never a failure the caller sees."
+readme = "README.md"
+requires-python = ">=3.11"
+license = "MIT"
+authors = [{ name = "Paulo Coutinho" }]
+keywords = ["cache", "caching", "memoize", "ttl", "stampede", "single-flight", "asyncio", "distributed", "postgresql", "mysql", "sqlite", "redis", "sqlalchemy", "fastapi", "django", "flask"]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Framework :: AsyncIO",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Database",
+    "Topic :: System :: Distributed Computing",
+]
+dependencies = []
+
+[project.optional-dependencies]
+sqlalchemy = ["sqlalchemy[asyncio]>=2.0"]
+redis = ["redis>=5.0"]
+
+[project.urls]
+Homepage = "https://github.com/paulocoutinhox/cachefy"
+Documentation = "https://github.com/paulocoutinhox/cachefy/tree/main/docs"
+Issues = "https://github.com/paulocoutinhox/cachefy/issues"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/cachefy"]
+
+# What a source distribution holds is named rather than left to whatever the working directory happens to contain.
+# Unnamed, it takes the lot: a virtualenv lying beside the source goes into the archive, and one absolute symlink inside it ends the build.
+[tool.hatch.build.targets.sdist]
+include = ["/src", "/tests", "/docs", "/extras", "/README.md", "/CLAUDE.md", "/LICENSE.md", "/Makefile", "/codecov.yml", "/pyproject.toml"]
+
+[tool.black]
+line-length = 320
+target-version = ["py311"]
+skip-magic-trailing-comma = true
+
+[tool.ruff]
+line-length = 320
+
+[tool.ruff.lint]
+select = ["E4", "E7", "E9", "F", "I"]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]
+
+markers = ["stress: many separate processes against a real server, which is minutes and not seconds — run by `make stress`"]
+
+# the stress suite is left out of every ordinary run, because a suite nobody waits for is a suite nobody runs
+addopts = ["-m", "not stress"]
+
+# no test runs forever: a hang becomes a failure with a traceback instead of a runner burning for hours
+timeout = 120
+
+# the thread method kills the process and dumps every stack, which is the one that works when the block is somewhere a signal never reaches
+timeout_method = "thread"
+
+[tool.coverage.run]
+branch = true
+source = ["cachefy"]
+concurrency = ["greenlet", "thread"]
+
+[tool.coverage.report]
+show_missing = true
+fail_under = 100
+# the one exemption, because an abstract method has no body to run. a gate with an escape hatch nobody needs is one somebody reaches for instead of writing the test
+exclude_lines = ["@abstractmethod"]
